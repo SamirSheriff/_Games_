@@ -31,7 +31,6 @@ FourInARow_MinMax_Player<T>::FourInARow_MinMax_Player(T symbol) : Player<T>(symb
 }
 
 
-// Method to get the best move for the player
 template <typename T>
 void FourInARow_MinMax_Player<T>::getmove(int& x, int& y) {
     y = MinMax(5, numeric_limits<long long>::min(), numeric_limits<long long>::max(), true).first;
