@@ -31,7 +31,6 @@ FourInARow_MinMax_Player<T>::FourInARow_MinMax_Player(T symbol) : Player<T>(symb
 }
 
 
-// Method to get the best move for the player
 template <typename T>
 void FourInARow_MinMax_Player<T>::getmove(int& x, int& y) {
     y = MinMax(5, numeric_limits<long long>::min(), numeric_limits<long long>::max(), true).first;
@@ -57,6 +56,7 @@ int FourInARow_MinMax_Player<T>::evaluateLine(vector<T> line){
 }
 
 
+// evaluate the board
 template <typename T>
 int FourInARow_MinMax_Player<T>::cellScore() {
     int score = 0;
@@ -117,6 +117,7 @@ int FourInARow_MinMax_Player<T>::cellScore() {
 }
 
 
+// Find the best move using the minimax algorithm
 template<typename T>
 pair<int, long long>FourInARow_MinMax_Player<T>::MinMax(int depth, long long alpha, long long beta, bool isMaximizing){
     if (!isMaximizing && this->boardPtr->is_win())  // If AI won
@@ -156,7 +157,7 @@ pair<int, long long>FourInARow_MinMax_Player<T>::MinMax(int depth, long long alp
         for (int col = 0; col < columns; ++col) {
             if (this->boardPtr->update_board(0, col, 'X')){
                 long long score = MinMax(depth - 1, alpha, beta,true).second;
-                this->boardPtr->update_board(0, col, ' ');
+                this->boardPtr->update_board(0, col, ' ');   // Undo move
                 if (score < worstScore){
                     worstScore = score;
                     column = col;
