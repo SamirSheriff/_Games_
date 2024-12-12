@@ -2,8 +2,9 @@
 #define _ULTIMATE_TIC_TAC_TOE_H
 
 #include "BoardGame_Classes.h"
+#include "bits/stdc++.h"
 
-bool winnerBox = false, draw_box = false;
+bool winnerBox = false, draw_box = false, isRandom = false;
 int xFirstCell, yFirstCell;   // Indexes of the first cell of box
 vector<vector<char>> bigBoard(3, vector<char>(3, ' '));
 
@@ -60,9 +61,9 @@ bool UltimateBoard::winBox(){
 
     // Check diagonals
     if ((this->board[xFirstCell][yFirstCell] == this->board[xFirstCell+1][yFirstCell+1] &&
-        this->board[xFirstCell][yFirstCell] == this->board[xFirstCell+2][yFirstCell+2] && this->board[xFirstCell][yFirstCell] != ' ') ||
+         this->board[xFirstCell][yFirstCell] == this->board[xFirstCell+2][yFirstCell+2] && this->board[xFirstCell][yFirstCell] != ' ') ||
         (this->board[xFirstCell][yFirstCell+2] == this->board[xFirstCell+1][yFirstCell+1] &&
-        this->board[xFirstCell+1][yFirstCell+1] == this->board[xFirstCell+2][yFirstCell] && this->board[xFirstCell][yFirstCell+2] != ' '))
+         this->board[xFirstCell+1][yFirstCell+1] == this->board[xFirstCell+2][yFirstCell] && this->board[xFirstCell][yFirstCell+2] != ' '))
     {
         bigBoard[xFirstCell/3][yFirstCell/3] =this->board[xFirstCell+1][yFirstCell+1];
         return true;
@@ -101,13 +102,16 @@ UltimateBoard::UltimateBoard() {
 }
 
 bool UltimateBoard::update_board(int x, int y, char mark){
-    // Only update if move is valid
+    // Only update if Move is valid
     if (x < 0 || x > 8 || y < 0 || y > 8 || this->board[x][y] != ' ')
         return false;
 
     // Forcing the second player to play on the same square chosen by the first player
     if (!winnerBox && !draw_box && UltimatePlayer::turn % 2 == 0 && (x < xFirstCell || x > xFirstCell+2 || y < yFirstCell || y > yFirstCell+2))
         return false;
+
+    if (isRandom)
+        cout << "\nRandom Computer Player: played in (" << x << ',' << y << ")\n\n";
 
     this->board[x][y] = mark;
     xFirstCell = (x % 3 == 0) ? x : x - 1 - (x - 1) % 3;
@@ -129,9 +133,9 @@ bool UltimateBoard::update_board(int x, int y, char mark){
 // Display the board and the pieces on it
 void UltimateBoard::display_board() {
     if (UltimatePlayer::turn % 2)
-        cout << string(95, '-') << endl << string(40, ' ') << "Turn: Player 1\n" << string(95, '-') << endl;
+        cout << string(95, '-') << endl << string(40, ' ') << "Turn: Player 1\n" << string(95, '-');
     else
-        cout << string(95, '-') << endl << string(40, ' ') << "Turn: Player 2\n" << string(95, '-') << endl;
+        cout << string(95, '-') << endl << string(40, ' ') << "Turn: Player 2\n" << string(95, '-');
 
     // Print board
     cout << endl << string(95, '=') << endl;
@@ -188,14 +192,21 @@ bool UltimateBoard::game_is_over() {
     return is_win() || is_draw();
 }
 
+//--------------------------------------
+
+// Constructor for UltimatePlayer
 UltimatePlayer::UltimatePlayer (string name, char symbol) : Player<char>(name, symbol) {}
 
 void UltimatePlayer::getmove(int &x, int &y) {
-    cout << "\nPlease enter your move x and y (1 to 3) separated by spaces: ";
+    cout << endl << this->name << ", enter your Move x and y (1 to 3) separated by spaces: ";
     cin >> x >> y;
     x--; y--;
+    isRandom = false;
 }
 
+//--------------------------------------
+
+//Constructor for Ultimate_Random_Player
 Ultimate_Random_Player::Ultimate_Random_Player (char symbol) : RandomPlayer<char>(symbol) {
     this->dimension = 9;
     this->name = "Random Computer Player";
@@ -210,6 +221,8 @@ void Ultimate_Random_Player::getmove(int &x, int &y) {
         x = rand() % 3 + xFirstCell;
         y = rand() % 3 + yFirstCell;
     }
+
+    isRandom = true;
 }
 
 #endif //_ULTIMATE_TIC_TAC_TOE_H

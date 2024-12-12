@@ -6,6 +6,7 @@
 
 string Move;
 int idxToken;
+bool isRandomPlayer = false;
 vector<pair<int,int>> tokens = {{ 0, 0 }, {0, 2}, {3, 1}, {3, 3}};
 
 template<typename T>
@@ -48,6 +49,24 @@ public:
 //--------------------------------------- IMPLEMENTATION ----------------------------
 
 
+void update_position_token(int x, int y){
+    cout << endl << x << " " << y << endl;
+    cout << "\nRandom Computer Player: chose (" << x + 1 << ',' << y + 1 << ") and moved to ";
+    if (Move == "1")
+        cout << "up\n\n";
+    else if (Move == "2")
+        cout << "right\n\n";
+    else if (Move == "3")
+        cout << "down\n\n";
+    else
+        cout << "left\n\n";
+
+    tokens.erase(tokens.begin() + idxToken);
+    tokens.emplace_back(x, y);
+}
+
+//--------------------------------------
+
 template <typename T>
 bool _4x4_TicTacToe_Board<T>::checkWinner(int x, int y, int addRow, int addCol){
     for (int i = 1; i < 3; ++i) {
@@ -86,11 +105,6 @@ _4x4_TicTacToe_Board<T>::_4x4_TicTacToe_Board() {
 }
 
 
-void update_position_token(int x, int y){
-    tokens.erase(tokens.begin() + idxToken);
-    tokens.emplace_back(x, y);
-}
-
 template<typename T>
 bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
     if (x < 0 || x > 3 || y < 0 || y > 3 || this->board[x][y] != symbol)
@@ -98,8 +112,8 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
 
     // If user choose move up
     if(Move == "1" && x - 1 >= 0 && this->board[x - 1][y] == ' '){
-        if (_4x4_TicTacToe_Player<T>::turn % 2 == 0)   // update the list of tokens of random player
-            update_position_token(row, col);
+        if (isRandomPlayer && _4x4_TicTacToe_Player<T>::turn % 2 == 0)   // update the list of tokens of random player
+            update_position_token(x, y);
         this->board[x][y] = ' ';
         this->board[x - 1][y] = symbol;
         row = x - 1;
@@ -111,8 +125,8 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
 
         // If user choose move right
     else if (Move == "2" && y + 1 < 4 && this->board[x][y + 1] == ' '){
-        if (_4x4_TicTacToe_Player<T>::turn % 2 == 0)   // update the list of tokens of random player
-            update_position_token(row, col);
+        if (isRandomPlayer && _4x4_TicTacToe_Player<T>::turn % 2 == 0)   // update the list of tokens of random player
+            update_position_token(x, y);
         this->board[x][y] = ' ';
         this->board[x][y + 1] = symbol;
         row = x;
@@ -124,8 +138,8 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
 
         // If user choose move down
     else if (Move == "3" && x + 1 < 4 && this->board[x + 1][y] == ' '){
-        if (_4x4_TicTacToe_Player<T>::turn % 2 == 0)   // update the list of tokens of random player
-            update_position_token(row, col);
+        if (isRandomPlayer && _4x4_TicTacToe_Player<T>::turn % 2 == 0)   // update the list of tokens of random player
+            update_position_token(x, y);
         this->board[x][y] = ' ';
         this->board[x + 1][y] = symbol;
         row = x + 1;
@@ -135,10 +149,10 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
         return true;
     }
 
-    // If user choose move left
+        // If user choose move left
     else if (Move == "4" && y - 1 >= 0 && this->board[x][y - 1] == ' '){
-        if (_4x4_TicTacToe_Player<T>::turn % 2 == 0)  // update the list of tokens of random player
-            update_position_token(row, col);
+        if (isRandomPlayer && _4x4_TicTacToe_Player<T>::turn % 2 == 0)  // update the list of tokens of random player
+            update_position_token(x, y);
         this->board[x][y] = ' ';
         this->board[x][y - 1] = symbol;
         row = x;
@@ -157,9 +171,9 @@ template<typename T>
 void _4x4_TicTacToe_Board<T>::display_board() {
     // Display who its turn
     if (_4x4_TicTacToe_Player<T>::turn % 2)
-        cout << string(37, '-') << "\n\t       Turn: Player 1\n" << string(37, '-') << "\n";
+        cout << string(37, '=') << "\n\t   Turn: Player 1\n" << string(37, '=') << endl << endl;
     else
-        cout << string(37, '-') << "\n\t       Turn: Player 2\n" << string(37, '-') << "\n";
+        cout << string(37, '=') << "\n\t   Turn: Player 2\n" << string(37, '=') << endl << endl;
 
     // Display the board
     cout << string(37, '-') << endl;
@@ -203,6 +217,7 @@ bool _4x4_TicTacToe_Board<T>::game_is_over(){
     return is_win();
 }
 
+//--------------------------------------
 
 // Constructor for FourInARowPlayer
 template <typename T>
@@ -210,21 +225,24 @@ _4x4_TicTacToe_Player<T>::_4x4_TicTacToe_Player(string name, T symbol) : Player<
 
 template<typename T>
 void _4x4_TicTacToe_Player<T>::getmove(int &x, int &y) {
-    cout << this->name << ", choose your token(" << this->symbol << ") and enter its index (1 to 4) separated by spaces: ";
+    cout << endl << this->name << ", choose your token(" << this->symbol << ") and enter its index (1 to 4) separated by spaces: ";
     cin >> x >> y;
     x--; y--;
 
     cout << "Where do you want to Move ?\n1)Up\n2)Right\n3)Down\n4)Left\nEnter your choice (1, 2, 3 or 4): ";
     cin >> Move;
+
+    isRandomPlayer = false;
 }
 
+//--------------------------------------
 
 // Constructor for random computer player
 template<typename T>
 _4x4_TicTacToe_Random_Player<T>::_4x4_TicTacToe_Random_Player(T symbol) : RandomPlayer<T>(symbol) {
     this->dimension = 4;
     this->name = "Random Computer Player";
-    srand(time(0));  // Seed the random number generator
+    srand(static_cast<unsigned int>(time(0)));  // Seed the random number generator
 }
 
 template<typename T>
@@ -233,6 +251,7 @@ void _4x4_TicTacToe_Random_Player<T>::getmove(int& x, int& y) {
     x = tokens[idxToken].first;                    // The index of row of chosen token
     y = tokens[idxToken].second;                   // The index of column of chosen token
     Move = to_string(rand() % 4 + 1);          // Random move (up, right, down or left)
+    isRandomPlayer = true;
 }
 
 
