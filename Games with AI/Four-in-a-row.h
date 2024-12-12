@@ -2,10 +2,12 @@
 #define _FOUR_IN_A_ROW_H
 
 #include"BoardGame_Classes.h"
+#include "bits/stdc++.h"
 
-// Last move
+// Last Move
 int row, col;
 char mark;
+bool isComputer = false;
 vector<vector<char>>marks(6, vector<char>(7, ' '));
 
 template <typename T>
@@ -53,11 +55,11 @@ bool FourInARowBoard<T>::checkWinner(int x, int y, int addRow, int addCol){
             return false;
 
         if ((addRow == 0 && addCol == 1) || (addRow == 0 && addCol == -1))
-            countRow++;
+            this->countRow++;
         else if ((addRow == 1 && addCol == 1) || (addRow == -1 && addCol == -1))
-            countRD++;
+            this->countRD++;
         else if ((addRow == 1 && addCol == -1) || (addRow == -1 && addCol == 1))
-            countLD++;
+            this->countLD++;
     }
     return true;
 }
@@ -95,6 +97,8 @@ bool FourInARowBoard<T>::update_board(int x, int y, T symbol) {
 
         for (int i = this->rows - 1; i >= 0; i--) {
             if (this->board[i][y] == ' ') {
+                if (isComputer)
+                    cout << "Random Computer Player: played in column " << y + 1 << " \n\n";
                 this->board[i][y] = symbol;
                 this->n_moves++;
                 row = i;
@@ -115,19 +119,18 @@ void FourInARowBoard<T>::display_board() {
     turn++;
 
     if (turn % 2)
-        cout << string(43, '-') << "\n\t       Turn: Player 1\n" << string(43, '-') << "\n";
+        cout << string(43, '-') << "\n\t       Turn: Player 1\n" << string(43, '-') << "\n\n";
     else
-        cout << string(43, '-') << "\n\t       Turn: Player 2\n" << string(43, '-') << "\n";
+        cout << string(43, '-') << "\n\t       Turn: Player 2\n" << string(43, '-') << "\n\n";
 
     for (int i = 0; i < this->rows; i++) {
-        cout << "\n|";
+        cout << "|";
         for (int j = 0; j < this->columns; j++) {
             cout << setw(3) << this->board[i][j] << "  |";
         }
-        cout << endl << string(43, '-');
+        cout << endl << string(43, '-') << endl;
     }
 
-    cout << endl;
     for (int i = 1; i < 8; ++i) {
         cout << setw(4) << i << "  ";
     }
@@ -138,7 +141,7 @@ void FourInARowBoard<T>::display_board() {
 // Returns true if there is any winner
 template <typename T>
 bool FourInARowBoard<T>::is_win() {
-    countRow = this->countRD = countLD = 1;
+    this->countRow = this->countRD = this->countLD = 1;
 
     if (checkWinner(row, col, -1, 0) || checkWinner(row, col, 0, 1) ||
         checkWinner(row, col, 0, -1) || checkWinner(row, col, 1, 1) ||
@@ -147,7 +150,7 @@ bool FourInARowBoard<T>::is_win() {
         return true;
     }
 
-    if (countRow >= 4 || countRD >= 4 || countLD >= 4)
+    if (this->countRow >= 4 || this->countRD >= 4 || this->countLD >= 4)
         return true;
 
     return false;
@@ -165,6 +168,7 @@ bool FourInARowBoard<T>::game_is_over() {
     return is_draw() || is_win();
 }
 
+//--------------------------------------
 
 // Constructor for FourInARowPlayer
 template <typename T>
@@ -173,24 +177,28 @@ FourInARowPlayer<T>::FourInARowPlayer(string name, T symbol) : Player<T>(name, s
 
 template <typename T>
 void FourInARowPlayer<T>::getmove(int& x, int& y) {
-    cout << "\nChoose a column (1 to 7): ";
+    cout << this->name << ", choose a column (1 to 7): ";
     cin >> y;
     y--;
     x = 0;
+    isComputer = false;
 }
 
+//--------------------------------------
 
+// Constructor for FourInARow_Random_Player
 template <typename T>
 FourInARow_Random_Player<T>::FourInARow_Random_Player(T symbol) : RandomPlayer<T>(symbol) {
     this->dimension = 7;
     this->name = "Random Computer Player";
-    srand(static_cast<unsigned int>(time(0)));  // Seed the random number generator
+    srand(time(0));  // Seed the random number generator
 }
 
 
 template <typename T>
 void FourInARow_Random_Player<T>::getmove(int& x, int& y) {
     y = rand() % this->dimension;   // Random number between 0 and 6
+    isComputer = true;
 }
 
 

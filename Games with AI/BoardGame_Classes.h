@@ -1,7 +1,8 @@
 #ifndef _BOARDGAME_CLASSES_H
 #define _BOARDGAME_CLASSES_H
 
-#include "bits/stdc++.h"
+#include <string>
+#include <vector>
 using namespace std;
 
 template <typename T>

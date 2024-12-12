@@ -1,7 +1,9 @@
 #ifndef _NUMERICAL_TIC_TAC_TOE_H
 #define _NUMERICAL_TIC_TAC_TOE_H
 
-#include"BoardGame_Classes.h"
+#include "BoardGame_Classes.h"
+#include "bits/stdc++.h"
+
 
 vector<int>Player1Nums = {1, 3, 5, 7, 9};  // Numbers player 1
 vector<int>Player2Nums = {2, 4, 6, 8};     // Numbers player 2
@@ -54,7 +56,7 @@ NumericalBoard<T>::NumericalBoard() {
 
 template<typename T>
 bool NumericalBoard<T>::update_board(int x, int y, T number) {
-    // Only update if move is valid
+    // Only update if Move is valid
     if (!(x < 0 || x >= this->rows || y < 0 || y >= this->columns)) {
         if (number == 50) {
             this->board[x][y] = number;
@@ -87,25 +89,25 @@ template<typename T>
 void NumericalBoard<T>::display_board() {
     // Print the player turn
     if (NumericalPlayer<T>::turn % 2)
-        cout << string(35, '-') << "\n\tTurn: Player 1\n" << string(35, '-') << "\n\n";
+        cout << string(25, '=') << "\n     Turn: Player 1\n" << string(25, '=') << endl;
     else
-        cout << string(35, '-') << "\n\tTurn: Player 2\n" << string(35, '-') << "\n\n";
+        cout << string(25, '=') << "\n     Turn: Player 2\n" << string(25, '=') << endl;
 
     // Print the board
-    for (int i = 0; i < this->rows; i++) {
-        for (int j = 0; j < this->columns; j++) {
-            if (this->board[i][j] == 50) {
-                cout << setw(3) << " ";
-            } else {
-                cout << setw(3) << this->board[i][j];
-            }
-            if (j < this->columns-1)
-                cout << "  |";
+    cout << string(25, '-') << endl;
+    for (int r = 0; r < this->rows; r++) {
+        cout << "|";
+        for (int c = 0; c < this->columns; c++) {
+            if (this->board[r][c] == 50)
+                cout << " (" << r + 1 << ',' << c + 1 << ") |";
+            else
+                cout << setw(4) << this->board[r][c] << "   |";
         }
-        if (i != this->rows - 1)
-            cout << "\n-----------------\n";
+        if (r != 2)
+            cout << "\n|-------|-------|-------|\n";
+        else
+            cout << endl << string(25, '-') << endl << endl;
     }
-    cout << endl << endl;
 }
 
 
@@ -138,18 +140,17 @@ bool NumericalBoard<T>::game_is_over() {
     return is_win() || is_draw();
 }
 
+//--------------------------------------
+
 // Constructor for Numerical_Tic-Tac-Toe_Player
 template<typename T>
-NumericalPlayer<T>::NumericalPlayer(string name, T symbol) : Player<T>(name, symbol) {
-}
-
+NumericalPlayer<T>::NumericalPlayer(string name, T symbol) : Player<T>(name, symbol) {}
 
 template<typename T>
 void NumericalPlayer<T>::getmove(int& x, int& y) {
-    cout << "Choose a row (0, 1 or 2): ";
-    cin >> x;
-    cout << "Choose a column (0, 1 or 2): ";
-    cin >> y;
+    cout << this->name << ", enter your move x and y (1 to 3) separated by spaces: ";
+    cin >> x >> y;
+    x--; y--;
 
     // Display the list of available numbers for Player1
     if (turn % 2){
@@ -160,7 +161,7 @@ void NumericalPlayer<T>::getmove(int& x, int& y) {
         cout << Player1Nums[Player1Nums.size()-1] << "}\n";
     }
 
-    // Display the list of available numbers for Player2
+        // Display the list of available numbers for Player2
     else{
         cout << "List: {";
         for (int i = 0; i < Player2Nums.size()-1; ++i) {
@@ -179,9 +180,8 @@ template<typename T>
 Numerical_Random_Player<T>::Numerical_Random_Player(T symbol) : RandomPlayer<T>(symbol){
     this->dimension = 3;
     this->name = "Random Computer Player";
-    srand(static_cast<unsigned int>(time(0)));  // Seed the random number generator
+    srand(time(0));  // Seed the random number generator
 }
-
 
 template<typename T>
 void Numerical_Random_Player<T>::getmove(int& x, int& y) {
