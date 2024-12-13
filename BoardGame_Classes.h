@@ -1,7 +1,8 @@
 #ifndef _BOARDGAME_CLASSES_H
 #define _BOARDGAME_CLASSES_H
 
-#include "bits/stdc++.h"
+#include <string>
+#include <vector>
 using namespace std;
 
 template <typename T>
@@ -81,6 +82,7 @@ public:
 //--------------------------------------- IMPLEMENTATION
 
 #include <iostream>
+using namespace std;
 
 template <typename T>
 GameManager<T>::GameManager(Board<T>* bPtr, Player<T>* playerPtr[2]) {
@@ -153,4 +155,23 @@ void Player<T>::setBoard(Board<T>* b) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif //_BOARDGAME_CLASSES_H
+
