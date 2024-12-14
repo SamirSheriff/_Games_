@@ -1,107 +1,211 @@
-#include <iostream>
+#include "BoardGame_Classes.h"
+#include "Numerical_Tic-Tac-Toe.h"
+#include "Four-in-a-row.h"
+#include "Ultimate_Tic-Tac-Toe.h"
+#include "4x4_Tic-Tac-Toe.h"
+#include "pyramidicXO.h"
+#include "wttt.h"
 
-#include "3x3X_O.h"
-#include "TicTacToe5x5.h"
 using namespace std;
 
-TicTacToe5x5::TicTacToe5x5() : movesLeft(24) {
-    board.resize(size, vector<char>(size, ' '));
-}
-
-void TicTacToe5x5::display_board() {
-    cout << "\n  ";
-    for (int i = 0; i < size; i++) cout << i << "   ";
-    cout << "\n";
-
-    for (int i = 0; i < size; i++) {
-        cout << i << " ";
-        for (int j = 0; j < size; j++) {
-            cout << board[i][j];
-            if (j < size - 1) cout << " | ";
-        }
-        cout << "\n";
-        if (i < size - 1) cout << "  " << string(size * 4 - 3, '-') << "\n";
-    }
-    cout << endl;
-}
-
-bool TicTacToe5x5::is_valid_move(int x, int y) {
-    return x >= 0 && x < size && y >= 0 && y < size && board[x][y] == ' ';
-}
-
-bool TicTacToe5x5::place_mark(int x, int y, char symbol) {
-    if (!is_valid_move(x, y)) return false;
-    board[x][y] = symbol;
-    movesLeft--;
-    return true;
-}
-
-int TicTacToe5x5::count_sequences(char symbol) {
-    int count = 0;
-
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size - 2; j++) {
-            if (board[i][j] == symbol && board[i][j + 1] == symbol && board[i][j + 2] == symbol)
-                count++;
-            if (board[j][i] == symbol && board[j + 1][i] == symbol && board[j + 2][i] == symbol)
-                count++;
-        }
-    }
-
-    for (int i = 0; i < size - 2; i++) {
-        for (int j = 0; j < size - 2; j++) {
-            if (board[i][j] == symbol && board[i + 1][j + 1] == symbol && board[i + 2][j + 2] == symbol)
-                count++;
-            if (board[i][j + 2] == symbol && board[i + 1][j + 1] == symbol && board[i + 2][j] == symbol)
-                count++;
-        }
-    }
-
-    return count;
-}
-
-pair<int, int> TicTacToe5x5::determine_winner() {
-    int x_count = count_sequences('X');
-    int o_count = count_sequences('O');
-    return {x_count, o_count};
-}
-
-bool TicTacToe5x5::is_full() {
-    return movesLeft <= 0;
-}
-
 int main() {
-    TicTacToe5x5 game;
-    char currentPlayer = 'X';
+    cout << "Welcome to Mental Games :)\n\n";
 
-    while (!game.is_full()) {
-        game.display_board();
-        int x, y;
+    string game, player2, player1Name, player2Name;
+    cout << "Games Menu:\n1) Pyramic Tic-Tac-Toe\n2) Four in a row\n4) Word Tic-Tac-Toe\n5) Numerical Tic-Tac-Toe\n"
+            "7) 4x4 Tic-Tac-Toe\n8) Ultimate Tic-Tac-Toe\n9) Exit\nEnter your choice (1 ,2, 3, 4, 5, 6, 7, 8 or 9): ";
+    cin >> game;
 
-        cout << "Player " << currentPlayer << ", enter your move (row and column): ";
-        cin >> x >> y;
+    // Get the name player2 1
+    cout << "Enter Player 1 name: ";
+    cin.ignore();
+    getline(cin, player1Name);
+    player1Name[0] = toupper(player1Name[0]);
 
-        if (!game.place_mark(x, y, currentPlayer)) {
-            cout << "Invalid move. Try again.\n";
-            continue;
-        }
+    // Choose player2 2
+    cout << "1) Play vs friend\n2) Play vs computer\nEnter your choice (1 or 2): ";
+    cin >> player2;
 
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    // Check if a user entered a valid choice or not
+    while (player2 != "1" && player2 != "2") {
+        cout << "Please, enter a valid choice\n";
+        cout << "1) Play vs friend\n2) Play vs computer\nEnter your choice (1 or 2): ";
+        cin >> player2;
     }
 
-    game.display_board();
-    pair<int, int> result = game.determine_winner();
+    if (game == "1"){
+        myboard<char> *B = new myboard<char>();
+        Player<char> *players[2];    // Set up player2 1
+        players[0] = new PyramidicPlayer(player1Name, 'X');
 
-    cout << "Game Over!\n";
-    cout << "Player X: " << result.first << " three-in-a-rows\n";
-    cout << "Player O: " << result.second << " three-in-a-rows\n";
+        // Set up player2 2
+        if (player2 == "1") {
+            cout << "Enter Player 2 name: ";
+            cin.ignore();
+            getline(cin, player2Name);
+            player2Name[0] = toupper(player2Name[0]);
+            players[1] = new PyramidicPlayer<char>(player2Name, 'O');
+        }
+        else {
+            players[1] = new pyramidicRandomPlayer('O');
+        }
 
-    if (result.first > result.second)
-        cout << "Player X wins!\n";
-    else if (result.second > result.first)
-        cout << "Player O wins!\n";
-    else
-        cout << "It's a draw!\n";
+        // Create the game manager and run the game
+        GameManager<char> pyramidic_game(B, players);
+        pyramidic_game.run();
 
+        // Clean up
+        delete B;
+        for (int i = 0; i < 2; ++i) {
+            delete players[i];
+        }
+
+    }
+
+    else if (game == "2"){
+        FourInARowBoard<char> *B = new FourInARowBoard<char>();  // Set up the board
+        // Set up player2 1
+        Player<char> *players[2];
+        players[0] = new FourInARowPlayer(player1Name, 'X');
+
+        // Set up player2 2
+        if (player2 == "1") {
+            cout << "Enter Player 2 name: ";
+            cin.ignore();
+            getline(cin, player2Name);
+            player2Name[0] = toupper(player2Name[0]);
+            players[1] = new FourInARowPlayer(player2Name, 'O');
+        }
+        else {
+            players[1] = new FourInARow_Random_Player('O');
+        }
+
+        // Create the game manager and run the game
+        GameManager<char> FourInARow_game(B, players);
+        FourInARow_game.run();
+
+        // Clean up
+        delete B;
+        for (int i = 0; i < 2; ++i) {
+            delete players[i];
+        }
+    }
+
+    else if (game == "4"){
+        WTTTboard<char> *B = new WTTTboard<char>("dic.txt");  // Set up the board
+
+        // Set up player2 1
+        Player<char> *players[2];
+        players[0] = new WTTTplayer(player1Name, 'X');
+
+        // Set up player2 2
+        if (player2 == "1") {
+            cout << "Enter Player 2 name: ";
+            cin.ignore();
+            getline(cin, player2Name);
+            player2Name[0] = toupper(player2Name[0]);
+            players[1] = new WTTTplayer(player2Name, 'O');
+        }
+        else {
+            players[1] = new RandomWTTTPlayer('O');
+        }
+
+        // Create the game manager and run the game
+        GameManager<char> WTTT_game(B, players);
+        WTTT_game.run();
+
+        // Clean up
+        delete B;
+        for (int i = 0; i < 2; ++i) {
+            delete players[i];
+        }
+    }
+
+
+    else if (game == "5") {
+        NumericalBoard<int> *B = new NumericalBoard<int>();  // Set up the board
+        Player<int> *players[2];    // Set up player 1
+        players[0] = new NumericalPlayer(player1Name, 50);
+
+        // Set up player 2
+        if (player2 == "1") {
+            cout << "Enter Player 2 name: ";
+            cin.ignore();
+            getline(cin, player2Name);
+            player2Name[0] = toupper(player2Name[0]);
+            players[1] = new NumericalPlayer(player2Name, 50);
+        } else {
+            players[1] = new Numerical_Random_Player(50);
+        }
+
+        // Create the game manager and run the game
+        GameManager<int> Numerical_game(B, players);
+        Numerical_game.run();
+
+        // Clean up
+        delete B;
+        for (int i = 0; i < 2; ++i) {
+            delete players[i];
+        }
+    }
+
+    else if (game == "7"){
+        _4x4_TicTacToe_Board<char> *B = new _4x4_TicTacToe_Board<char>();  // Set up the board
+        Player<char> *players[2];  // Set up player 1
+        players[0] = new _4x4_TicTacToe_Player<char>(player1Name, 'X');
+
+        // Set up player 2
+        if (player2 == "1") {
+            cout << "Enter Player 2 name: ";   // Get the name of player 2
+            cin.ignore();
+            getline(cin, player2Name);
+            player2Name[0] = toupper(player2Name[0]);
+            players[1] = new _4x4_TicTacToe_Player<char>(player2Name, 'O');
+        }
+        else {
+            players[1] = new _4x4_TicTacToe_Random_Player<char>('O');
+        }
+
+        // Create the game manager and run the game
+        GameManager<char> _4x4_TicTacToe_game(B, players);
+        _4x4_TicTacToe_game.run();
+
+        // Clean up
+        delete B;
+        for (int i = 0; i < 2; ++i) {
+            delete players[i];
+        }
+    }
+
+    else if (game == "8"){
+        UltimateBoard *B = new UltimateBoard();  // Set up the board
+        Player<char> *players[2];  // Set up player 1
+        players[0] = new UltimatePlayer(player1Name, 'X');
+
+        // Set up player 2
+        if (player2 == "1") {
+            cout << "Enter Player 2 name: ";
+            cin.ignore();
+            getline(cin, player2Name);
+            player2Name[0] = toupper(player2Name[0]);
+            players[1] = new UltimatePlayer(player2Name, 'O');
+        }
+        else {
+            players[1] = new Ultimate_Random_Player('O');
+        }
+
+        // Create the game manager and run the game
+        GameManager<char> Ultimate_game(B, players);
+        Ultimate_game.run();
+
+        // Clean up
+        delete B;
+        for (int i = 0; i < 2; ++i) {
+            delete players[i];
+        }
+    }
     return 0;
 }
+
+
+
