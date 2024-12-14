@@ -12,8 +12,8 @@ int main() {
     cout << "Welcome to Mental Games :)\n\n";
 
     string game, player2, player1Name, player2Name;
-    cout << "Games Menu:\n1) Pyramic Tic-Tac-Toe\n2) Four in a row\n4) Word Tic-Tac-Toe\n5) Numerical Tic-Tac-Toe\n"
-            "7) 4x4 Tic-Tac-Toe\n8) Ultimate Tic-Tac-Toe\n9) Exit\nEnter your choice (1 ,2, 3, 4, 5, 6, 7, 8 or 9): ";
+    cout << "Games Menu:\n1) Pyramic Tic-Tac-Toe\n2) Four in a row\n4) Word Tic-Tac-Toe\n5) Numerical Tic-Tac-Toe\n";
+    cout << "7) 4x4 Tic-Tac-Toe\n8) Ultimate Tic-Tac-Toe\n9) Exit\nEnter the number of game: ";
     cin >> game;
 
     // Get the name player2 1
