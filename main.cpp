@@ -34,12 +34,12 @@ int main() {
 
     else {
         // Choose player2 2
-        cout << "1) Play vs friend\n2) Play vs computer\nEnter your choice (1 or 2): ";
+        cout << "1) Play VS Friend\n2) Play VS Computer\n3) Computer VS Computer\nEnter your choice (1, 2, or 3): ";
         cin >> player2;
         // Check if a user entered a valid choice or not
-        while (player2 != "1" && player2 != "2") {
+        while (player2 != "1" && player2 != "2" && player2 != "3") {
             cout << "Please, enter a valid choice\n";
-            cout << "1) Play vs friend\n2) Play vs computer\nEnter your choice (1 or 2): ";
+            cout << "1) Play VS Friend\n2) Play VS Computer\n3) Computer VS Computer\nEnter your choice (1, 2, or 3): ";
             cin >> player2;
         }
     }
@@ -47,7 +47,6 @@ int main() {
     if (game == "1"){
         myboard<char> *B = new myboard<char>();
         Player<char> *players[2];    // Set up player2 1
-        players[0] = new PyramidicPlayer(player1Name, 'X');
 
         // Set up player2 2
         if (player2 == "1") {
@@ -55,11 +54,18 @@ int main() {
             cin.ignore();
             getline(cin, player2Name);
             player2Name[0] = toupper(player2Name[0]);
+            players[0] = new PyramidicPlayer(player1Name, 'X');
             players[1] = new PyramidicPlayer<char>(player2Name, 'O');
         }
-        else {
+        else if (player2 == "2") {
+            players[0] = new PyramidicPlayer(player1Name, 'X');
             players[1] = new pyramidicRandomPlayer('O');
         }
+        else{
+            players[0] = new pyramidicRandomPlayer('X');
+            players[1] = new pyramidicRandomPlayer('O');
+        }
+
 
         // Create the game manager and run the game
         GameManager<char> pyramidic_game(B, players);
@@ -75,9 +81,7 @@ int main() {
 
     else if (game == "2"){
         FourInARowBoard<char> *B = new FourInARowBoard<char>();  // Set up the board
-        // Set up player2 1
         Player<char> *players[2];
-        players[0] = new FourInARowPlayer(player1Name, 'X');
 
         // Set up player2 2
         if (player2 == "1") {
@@ -85,9 +89,15 @@ int main() {
             cin.ignore();
             getline(cin, player2Name);
             player2Name[0] = toupper(player2Name[0]);
+            players[0] = new FourInARowPlayer(player1Name, 'X');
             players[1] = new FourInARowPlayer(player2Name, 'O');
         }
-        else {
+        else if (player2 == "2"){
+            players[0] = new FourInARowPlayer(player1Name, 'X');
+            players[1] = new FourInARow_Random_Player('O');
+        }
+        else{
+            players[0] = new FourInARow_Random_Player('X');
             players[1] = new FourInARow_Random_Player('O');
         }
 
@@ -129,19 +139,16 @@ int main() {
         cout << "Player O: " << result.second << " three-in-a-rows\n";
 
         if (result.first > result.second)
-            cout << "Player X wins!\n";
+            cout << player1Name << " wins!\n";
         else if (result.second > result.first)
-            cout << "Player O wins!\n";
+            cout << player2Name << " wins!\n";
         else
             cout << "Draw!\n";
     }
 
     else if (game == "4"){
         WTTTboard<char> *B = new WTTTboard<char>("dic.txt");  // Set up the board
-
-        // Set up player2 1
         Player<char> *players[2];
-        players[0] = new WTTTplayer(player1Name, 'X');
 
         // Set up player2 2
         if (player2 == "1") {
@@ -149,9 +156,15 @@ int main() {
             cin.ignore();
             getline(cin, player2Name);
             player2Name[0] = toupper(player2Name[0]);
+            players[0] = new WTTTplayer(player1Name, 'X');
             players[1] = new WTTTplayer(player2Name, 'O');
         }
-        else {
+        else if (player2 == "2"){
+            players[0] = new WTTTplayer(player1Name, 'X');
+            players[1] = new RandomWTTTPlayer('O');
+        }
+        else{
+            players[0] = new RandomWTTTPlayer('X');
             players[1] = new RandomWTTTPlayer('O');
         }
 
@@ -169,8 +182,7 @@ int main() {
 
     else if (game == "5") {
         NumericalBoard<int> *B = new NumericalBoard<int>();  // Set up the board
-        Player<int> *players[2];    // Set up player 1
-        players[0] = new NumericalPlayer(player1Name, 50);
+        Player<int> *players[2];
 
         // Set up player 2
         if (player2 == "1") {
@@ -178,8 +190,13 @@ int main() {
             cin.ignore();
             getline(cin, player2Name);
             player2Name[0] = toupper(player2Name[0]);
+            players[0] = new NumericalPlayer(player1Name, 50);
             players[1] = new NumericalPlayer(player2Name, 50);
-        } else {
+        } else if (player2 == "2"){
+            players[0] = new NumericalPlayer(player1Name, 50);
+            players[1] = new Numerical_Random_Player(50);
+        } else{
+            players[0] = new Numerical_Random_Player(50);
             players[1] = new Numerical_Random_Player(50);
         }
 
@@ -209,8 +226,7 @@ int main() {
 
     else if (game == "7"){
         _4x4_TicTacToe_Board<char> *B = new _4x4_TicTacToe_Board<char>();  // Set up the board
-        Player<char> *players[2];  // Set up player 1
-        players[0] = new _4x4_TicTacToe_Player<char>(player1Name, 'X');
+        Player<char> *players[2];
 
         // Set up player 2
         if (player2 == "1") {
@@ -218,9 +234,13 @@ int main() {
             cin.ignore();
             getline(cin, player2Name);
             player2Name[0] = toupper(player2Name[0]);
+            players[0] = new _4x4_TicTacToe_Player<char>(player1Name, 'X');
             players[1] = new _4x4_TicTacToe_Player<char>(player2Name, 'O');
-        }
-        else {
+        } else if (player2 == "2") {
+            players[0] = new _4x4_TicTacToe_Player<char>(player1Name, 'X');
+            players[1] = new _4x4_TicTacToe_Random_Player<char>('O');
+        } else {
+            players[0] = new _4x4_TicTacToe_Random_Player<char>('X');
             players[1] = new _4x4_TicTacToe_Random_Player<char>('O');
         }
 
@@ -237,8 +257,7 @@ int main() {
 
     else if (game == "8"){
         UltimateBoard *B = new UltimateBoard();  // Set up the board
-        Player<char> *players[2];  // Set up player 1
-        players[0] = new UltimatePlayer(player1Name, 'X');
+        Player<char> *players[2];
 
         // Set up player 2
         if (player2 == "1") {
@@ -246,9 +265,13 @@ int main() {
             cin.ignore();
             getline(cin, player2Name);
             player2Name[0] = toupper(player2Name[0]);
+            players[0] = new UltimatePlayer(player1Name, 'X');
             players[1] = new UltimatePlayer(player2Name, 'O');
-        }
-        else {
+        } else if (player2 == "2"){
+            players[0] = new UltimatePlayer(player1Name, 'X');
+            players[1] = new Ultimate_Random_Player('O');
+        } else {
+            players[0] = new Ultimate_Random_Player('X');
             players[1] = new Ultimate_Random_Player('O');
         }
 
@@ -264,6 +287,10 @@ int main() {
     }
     return 0;
 }
+
+
+
+
 
 
 
