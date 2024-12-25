@@ -1,7 +1,7 @@
-
 #ifndef pyramidic_XO
 #define pyramidic_XO
 #include "BoardGame_Classes.h"
+
 using namespace std;
 
 template <typename T>
@@ -69,25 +69,25 @@ template <typename T>
 bool myboard<T>::is_win() {
 // Check for horizontal, vertical, and diagonal wins
     for (int r = 0; r < this->rows; r++) {
-    for (int c = 0; c < 2 * (r + 1) - 1; c++) {
-    if (this->board[r][c] == '*') continue;
-    T symbol = this->board[r][c];
+        for (int c = 0; c < 2 * (r + 1) - 1; c++) {
+            if (this->board[r][c] == '*') continue;
+            T symbol = this->board[r][c];
 
-    // Horizontal
-    if (c + 2 < 2 * (r + 1) && this->board[r][c + 1] == symbol && this->board[r][c + 2] == symbol) {
-    return true;
-    }
+            // Horizontal
+            if (c + 2 < 2 * (r + 1) && this->board[r][c + 1] == symbol && this->board[r][c + 2] == symbol) {
+            return true;
+            }
 
-    // Vertical
-    if (r + 2 < this->rows && c < 2 * (r + 1) && this->board[r + 1][c] == symbol && this->board[r + 2][c] == symbol) {
-    return true;
-    }
+            // Vertical
+            if (r + 2 < this->rows && c < 2 * (r + 1) && this->board[r + 1][c] == symbol && this->board[r + 2][c] == symbol) {
+            return true;
+            }
 
-    // Diagonal
-    if (r + 2 < this->rows && c + 2 < 2 * (r + 2) +1 && this->board[r + 1][c + 1] == symbol && this->board[r + 2][c + 2] == symbol) {
-    return true;
-    }
-    }
+            // Diagonal
+            if (r + 2 < this->rows && c + 2 < 2 * (r + 2) +1 && this->board[r + 1][c + 1] == symbol && this->board[r + 2][c + 2] == symbol) {
+            return true;
+            }
+        }
     }
     return false;
 }
@@ -101,34 +101,36 @@ template <typename T>
 bool myboard<T>::game_is_over() {
     return this->n_moves == (this->rows * this->rows);
 }
+
 template<typename T>
 class PyramidicPlayer : public Player<T>{
 public:
     PyramidicPlayer(string name, T symbol):Player<T>(name, symbol){}
-    PyramidicPlayer(T symbol):Player<T>("computer", symbol){
+    PyramidicPlayer(T symbol):Player<T>("computer", symbol) {}
 
-    }
     void getmove(int& x, int& y)override{
-    if(this->name=="computer"){
-        srand(static_cast<unsigned>(time(0))); // Seed for randomness
-        x = rand() % 3; // Randomly pick a row (0, 1, or 2)
-        y = rand() % (2 * x + 1);
-        cout<<"computer played successfully ! "<<endl;
+        if(this->name=="computer"){
+            srand(static_cast<unsigned>(time(0))); // Seed for randomness
+            x = rand() % 3; // Randomly pick a row (0, 1, or 2)
+            y = rand() % (2 * x + 1);
+            cout<<"computer played successfully ! "<<endl;
 
-    }
-    else{
-        cout << this->name << ", enter your move (row and column starting from 0)" ;
-        cin >> x >> y;
-    }
+        }
+        else{
+            cout << this->name << ", enter your move (row and column starting from 0)" ;
+            cin >> x >> y;
+        }
     }
 
 };
+
 template <typename T>
 class pyramidicRandomPlayer : public RandomPlayer<T> {
     public:
     pyramidicRandomPlayer(T symbol):RandomPlayer<T>(symbol){};
     void getmove(int &x, int &y)override;
 };
+
 template<typename T>
 void pyramidicRandomPlayer<T>::getmove(int &x, int &y) {
     srand(static_cast<unsigned>(time(0))); // Seed for randomness
