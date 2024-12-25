@@ -212,11 +212,6 @@ int main() {
     }
 
     else if (game == "6"){
-        cout << "Enter Player 2 name: ";
-        cin.ignore();
-        getline(cin, player2Name);
-        player2Name[0] = toupper(player2Name[0]);
-
         player player1( player1Name, 'X');
         player player2( player2Name, 'O');
 
@@ -287,10 +282,6 @@ int main() {
     }
     return 0;
 }
-
-
-
-
 
 
 
