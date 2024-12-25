@@ -19,6 +19,7 @@ private:
 
 public:
     FourInARowBoard();
+    ~FourInARowBoard();
     bool update_board (int x , int y , T symbol);
     void display_board () ;
     bool is_win() ;
@@ -80,6 +81,14 @@ FourInARowBoard<T>::FourInARowBoard() {
     this->n_moves = 0;
 }
 
+// Destructor FourInARowBoard
+template <typename T>
+FourInARowBoard<T>::~FourInARowBoard(){
+    for (int i = 0; i < this->rows; ++i) {
+        delete[] this->board[i];
+    }
+    delete[] this->board;
+}
 
 template <typename T>
 bool FourInARowBoard<T>::update_board(int x, int y, T symbol) {
@@ -190,7 +199,7 @@ void FourInARowPlayer<T>::getmove(int& x, int& y) {
 template <typename T>
 FourInARow_Random_Player<T>::FourInARow_Random_Player(T symbol) : RandomPlayer<T>(symbol) {
     this->dimension = 7;
-    this->name = "Random Computer Player";
+    this->name = (this->symbol == 'X') ? "Random Computer Player(X)" : "Random Computer Player(O)";
     srand(time(0));  // Seed the random number generator
 }
 
