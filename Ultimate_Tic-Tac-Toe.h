@@ -14,6 +14,7 @@ private:
     bool drawBox();
 public:
     UltimateBoard();
+    ~UltimateBoard();
     bool update_board (int x , int y , char symbol);
     void display_board () ;
     bool is_win() ;
@@ -61,9 +62,9 @@ bool UltimateBoard::winBox(){
 
     // Check diagonals
     if ((this->board[xFirstCell][yFirstCell] == this->board[xFirstCell+1][yFirstCell+1] &&
-         this->board[xFirstCell][yFirstCell] == this->board[xFirstCell+2][yFirstCell+2] && this->board[xFirstCell][yFirstCell] != ' ') ||
+        this->board[xFirstCell][yFirstCell] == this->board[xFirstCell+2][yFirstCell+2] && this->board[xFirstCell][yFirstCell] != ' ') ||
         (this->board[xFirstCell][yFirstCell+2] == this->board[xFirstCell+1][yFirstCell+1] &&
-         this->board[xFirstCell+1][yFirstCell+1] == this->board[xFirstCell+2][yFirstCell] && this->board[xFirstCell][yFirstCell+2] != ' '))
+        this->board[xFirstCell+1][yFirstCell+1] == this->board[xFirstCell+2][yFirstCell] && this->board[xFirstCell][yFirstCell+2] != ' '))
     {
         bigBoard[xFirstCell/3][yFirstCell/3] =this->board[xFirstCell+1][yFirstCell+1];
         return true;
@@ -99,6 +100,14 @@ UltimateBoard::UltimateBoard() {
         }
     }
     this->n_moves = 0;
+}
+
+//Destructor UltimateBoard
+UltimateBoard::~UltimateBoard() {
+    for (int i = 0; i < this->rows; ++i) {
+        delete[] this->board[i];
+    }
+    delete[] this->board;
 }
 
 bool UltimateBoard::update_board(int x, int y, char mark){
@@ -209,7 +218,7 @@ void UltimatePlayer::getmove(int &x, int &y) {
 //Constructor for Ultimate_Random_Player
 Ultimate_Random_Player::Ultimate_Random_Player (char symbol) : RandomPlayer<char>(symbol) {
     this->dimension = 9;
-    this->name = "Random Computer Player";
+    this->name = (this->symbol == 'X') ? "Random Computer Player(X)" : "Random Computer Player(O)";
     srand(static_cast<unsigned int>(time(0)));  // Seed the random number generator
 }
 
