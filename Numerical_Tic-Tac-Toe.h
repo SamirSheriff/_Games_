@@ -4,6 +4,7 @@
 #include "BoardGame_Classes.h"
 #include "bits/stdc++.h"
 
+
 vector<int>Player1Nums = {1, 3, 5, 7, 9};  // Numbers player 1
 vector<int>Player2Nums = {2, 4, 6, 8};     // Numbers player 2
 
@@ -11,6 +12,7 @@ template<typename T>
 class NumericalBoard : public Board<T> {
 public:
     NumericalBoard();
+    ~NumericalBoard();
     bool update_board (int x, int y, T symbol);
     void display_board () ;
     bool is_win();
@@ -51,6 +53,15 @@ NumericalBoard<T>::NumericalBoard() {
         }
     }
     this->n_moves = 0;
+}
+
+// Destructor NumericalBoard
+template<typename T>
+NumericalBoard<T>::~NumericalBoard(){
+    for (int r = 0; r < this->rows; r++) {
+        delete[] this->board[r];
+    }
+    delete[] this->board;
 }
 
 template<typename T>
@@ -99,7 +110,7 @@ void NumericalBoard<T>::display_board() {
         for (int c = 0; c < this->columns; c++) {
             if (this->board[r][c] == 50)
                 cout << " (" << r + 1 << ',' << c + 1 << ") |";
-            else
+             else
                 cout << setw(4) << this->board[r][c] << "   |";
         }
         if (r != 2)
@@ -160,7 +171,7 @@ void NumericalPlayer<T>::getmove(int& x, int& y) {
         cout << Player1Nums[Player1Nums.size()-1] << "}\n";
     }
 
-        // Display the list of available numbers for Player2
+    // Display the list of available numbers for Player2
     else{
         cout << "List: {";
         for (int i = 0; i < Player2Nums.size()-1; ++i) {
@@ -186,8 +197,13 @@ template<typename T>
 void Numerical_Random_Player<T>::getmove(int& x, int& y) {
     x = rand() % this->dimension;  // Random number between 0 and 2
     y = rand() % this->dimension;
-    int index = rand() % Player2Nums.size();
-    this->symbol = Player2Nums[index];
+    if (NumericalPlayer<T>::turn % 2 == 0) {
+        int index = rand() % Player2Nums.size();
+        this->symbol = Player2Nums[index];
+    } else {
+        int index = rand() % Player1Nums.size();
+        this->symbol = Player1Nums[index];
+    }
 }
 
 #endif //_NUMERICAL_TIC_TAC_TOE_H
