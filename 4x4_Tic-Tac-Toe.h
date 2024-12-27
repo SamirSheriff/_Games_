@@ -67,18 +67,10 @@ void update_position_token(int x, int y){
     if (_4x4_TicTacToe_Player<T>::turn % 2 == 0) {
         tokensO.erase(tokensO.begin() + idxToken);
         tokensO.emplace_back(x, y);
-        for(auto token : tokensO){
-            cout << "("<< token.first << ", " << token.second << ") ";
-        }
     } else {
         tokensX.erase(tokensX.begin() + idxToken);
         tokensX.emplace_back(x, y);
-        cout << endl;
-        for(auto token : tokensX){
-            cout << "("<< token.first << ", " << token.second << ") ";
         }
-    }
-    cout << endl;
 }
 
 //--------------------------------------
@@ -137,9 +129,9 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
     // If user choose move up
     if(Move == "1" && x - 1 >= 0 && this->board[x - 1][y] == ' '){
         if (isRandomPlayerO && _4x4_TicTacToe_Player<T>::turn % 2 == 0)  // update the list of tokens of random player
-            update_position_token<T>(x - 1, y);
+            update_position_token<T>(x, y);
         else if (isRandomPlayerX && _4x4_TicTacToe_Player<T>::turn % 2 != 0) // update the list of tokens of random player 1
-            update_position_token<T>(x - 1, y);
+            update_position_token<T>(x, y);
 
         this->board[x][y] = ' ';
         this->board[x - 1][y] = symbol;
@@ -153,9 +145,9 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
         // If user choose move right
     else if (Move == "2" && y + 1 < 4 && this->board[x][y + 1] == ' '){
         if (isRandomPlayerO && _4x4_TicTacToe_Player<T>::turn % 2 == 0)  // update the list of tokens of random player 2
-            update_position_token<T>(x, y + 1);
+            update_position_token<T>(x, y);
         else if (isRandomPlayerX && _4x4_TicTacToe_Player<T>::turn % 2 != 0) // update the list of tokens of random player 1
-            update_position_token<T>(x, y + 1);
+            update_position_token<T>(x, y);
 
         this->board[x][y] = ' ';
         this->board[x][y + 1] = symbol;
@@ -169,9 +161,9 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
         // If user choose move down
     else if (Move == "3" && x + 1 < 4 && this->board[x + 1][y] == ' '){
         if (isRandomPlayerO && _4x4_TicTacToe_Player<T>::turn % 2 == 0)  // update the list of tokens of random player 2
-            update_position_token<T>(x + 1, y);
+            update_position_token<T>(x, y);
         else if (isRandomPlayerX && _4x4_TicTacToe_Player<T>::turn % 2 != 0) // update the list of tokens of random player 1
-            update_position_token<T>(x + 1, y);
+            update_position_token<T>(x, y);
 
         this->board[x][y] = ' ';
         this->board[x + 1][y] = symbol;
@@ -185,9 +177,9 @@ bool _4x4_TicTacToe_Board<T>::update_board(int x, int y, T symbol) {
     // If user choose move left
     else if (Move == "4" && y - 1 >= 0 && this->board[x][y - 1] == ' '){
         if (isRandomPlayerO && _4x4_TicTacToe_Player<T>::turn % 2 == 0)  // update the list of tokens of random player 2
-            update_position_token<T>(x, y - 1);
+            update_position_token<T>(x, y);
         else if (isRandomPlayerX && _4x4_TicTacToe_Player<T>::turn % 2 != 0) // update the list of tokens of random player 1
-            update_position_token<T>(x, y - 1);
+            update_position_token<T>(x, y);
 
         this->board[x][y] = ' ';
         this->board[x][y - 1] = symbol;
@@ -295,7 +287,7 @@ void _4x4_TicTacToe_Random_Player<T>::getmove(int& x, int& y) {
         idxToken = rand() % tokensX.size();           // index random number to choose a token from the vector(tokens)
         x = tokensX[idxToken].first;                  // The index of row of chosen token
         y = tokensX[idxToken].second;                 // The index of column of chosen token
-        Move = to_string(rand() % 4 + 1);        // Random move (up, right, down or left)
+        Move = to_string(rand() % 4 + 1);         // Random move (up, right, down or left)
         isRandomPlayerO = false;
         isRandomPlayerX = true;
     }
