@@ -1,287 +1,144 @@
-#include "BoardGame_Classes.h"
-#include "Numerical_Tic-Tac-Toe.h"
-#include "Four-in-a-row.h"
-#include "Ultimate_Tic-Tac-Toe.h"
-#include "4x4_Tic-Tac-Toe.h"
-#include "pyramidicXO.h"
-#include "wttt.h"
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
 #include "misere_tic_tac_toe.h"
-#include "TicTacToe5x5.h"
 
 using namespace std;
 
-int main() {
-    cout << "Welcome to Mental Games :)\n\n";
-
-    string game, player2, player1Name, player2Name;
-    cout << "Games Menu:\n1) Pyramic Tic-Tac-Toe\n2) Four in a row\n3) 5x5 Tic-Tac-Toe\n4) Word Tic-Tac-Toe\n";
-    cout << "5) Numerical Tic-Tac-Toe\n6) Misere Tic-Tac-Toe\n7) 4x4 Tic-Tac-Toe\n8) Ultimate Tic-Tac-Toe\n";
-    cout << "9) Exit\nEnter your choice (1 ,2, 3, 4, 5, 6, 7, 8 or 9): ";
-    cin >> game;
-
-    // Get the name player2 1
-    cout << "Enter Player 1 name: ";
-    cin.ignore();
-    getline(cin, player1Name);
-    player1Name[0] = toupper(player1Name[0]);
-
-    if (game == "3" || game == "6"){
-        cout << "Enter Player 2 name: ";
-        cin.ignore();
-        getline(cin, player2Name);
-        player2Name[0] = toupper(player2Name[0]);
-    }
-
-    else {
-        // Choose player2 2
-        cout << "1) Play VS Friend\n2) Play VS Computer\n3) Computer VS Computer\nEnter your choice (1, 2, or 3): ";
-        cin >> player2;
-        // Check if a user entered a valid choice or not
-        while (player2 != "1" && player2 != "2" && player2 != "3") {
-            cout << "Please, enter a valid choice\n";
-            cout << "1) Play VS Friend\n2) Play VS Computer\n3) Computer VS Computer\nEnter your choice (1, 2, or 3): ";
-            cin >> player2;
-        }
-    }
-
-    if (game == "1"){
-        myboard<char> *B = new myboard<char>();
-        Player<char> *players[2];    // Set up player2 1
-
-        // Set up player2 2
-        if (player2 == "1") {
-            cout << "Enter Player 2 name: ";
-            cin.ignore();
-            getline(cin, player2Name);
-            player2Name[0] = toupper(player2Name[0]);
-            players[0] = new PyramidicPlayer(player1Name, 'X');
-            players[1] = new PyramidicPlayer<char>(player2Name, 'O');
-        }
-        else if (player2 == "2") {
-            players[0] = new PyramidicPlayer(player1Name, 'X');
-            players[1] = new pyramidicRandomPlayer('O');
-        }
-        else{
-            players[0] = new pyramidicRandomPlayer('X');
-            players[1] = new pyramidicRandomPlayer('O');
-        }
-
-
-        // Create the game manager and run the game
-        GameManager<char> pyramidic_game(B, players);
-        pyramidic_game.run();
-
-        // Clean up
-        delete B;
-        for (int i = 0; i < 2; ++i) {
-            delete players[i];
-        }
-
-    }
-
-    else if (game == "2"){
-        FourInARowBoard<char> *B = new FourInARowBoard<char>();  // Set up the board
-        Player<char> *players[2];
-
-        // Set up player2 2
-        if (player2 == "1") {
-            cout << "Enter Player 2 name: ";
-            cin.ignore();
-            getline(cin, player2Name);
-            player2Name[0] = toupper(player2Name[0]);
-            players[0] = new FourInARowPlayer(player1Name, 'X');
-            players[1] = new FourInARowPlayer(player2Name, 'O');
-        }
-        else if (player2 == "2"){
-            players[0] = new FourInARowPlayer(player1Name, 'X');
-            players[1] = new FourInARow_Random_Player('O');
-        }
-        else{
-            players[0] = new FourInARow_Random_Player('X');
-            players[1] = new FourInARow_Random_Player('O');
-        }
-
-        // Create the game manager and run the game
-        GameManager<char> FourInARow_game(B, players);
-        FourInARow_game.run();
-
-        // Clean up
-        delete B;
-        for (int i = 0; i < 2; ++i) {
-            delete players[i];
-        }
-    }
-
-    else if (game == "3"){
-        TicTacToe5x5 game;
-        char currentPlayer = 'X';
-
-        while (!game.is_full()) {
-            game.display_board();
-            int x, y;
-
-            cout << "Player " << currentPlayer << ", enter your move (row and column): ";
-            cin >> x >> y;
-
-            if (!game.place_mark(x, y, currentPlayer)) {
-                cout << "Invalid move. Try again.\n";
-                continue;
-            }
-
-            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
-        }
-
-        game.display_board();
-        pair<int, int> result = game.determine_winner();
-
-        cout << "Game Over!\n";
-        cout << "Player X: " << result.first << " three-in-a-rows\n";
-        cout << "Player O: " << result.second << " three-in-a-rows\n";
-
-        if (result.first > result.second)
-            cout << player1Name << " wins!\n";
-        else if (result.second > result.first)
-            cout << player2Name << " wins!\n";
-        else
-            cout << "Draw!\n";
-    }
-
-    else if (game == "4"){
-        WTTTboard<char> *B = new WTTTboard<char>("dic.txt");  // Set up the board
-        Player<char> *players[2];
-
-        // Set up player2 2
-        if (player2 == "1") {
-            cout << "Enter Player 2 name: ";
-            cin.ignore();
-            getline(cin, player2Name);
-            player2Name[0] = toupper(player2Name[0]);
-            players[0] = new WTTTplayer(player1Name, 'X');
-            players[1] = new WTTTplayer(player2Name, 'O');
-        }
-        else if (player2 == "2"){
-            players[0] = new WTTTplayer(player1Name, 'X');
-            players[1] = new RandomWTTTPlayer('O');
-        }
-        else{
-            players[0] = new RandomWTTTPlayer('X');
-            players[1] = new RandomWTTTPlayer('O');
-        }
-
-        // Create the game manager and run the game
-        GameManager<char> WTTT_game(B, players);
-        WTTT_game.run();
-
-        // Clean up
-        delete B;
-        for (int i = 0; i < 2; ++i) {
-            delete players[i];
-        }
-    }
-
-
-    else if (game == "5") {
-        NumericalBoard<int> *B = new NumericalBoard<int>();  // Set up the board
-        Player<int> *players[2];
-
-        // Set up player 2
-        if (player2 == "1") {
-            cout << "Enter Player 2 name: ";
-            cin.ignore();
-            getline(cin, player2Name);
-            player2Name[0] = toupper(player2Name[0]);
-            players[0] = new NumericalPlayer(player1Name, 50);
-            players[1] = new NumericalPlayer(player2Name, 50);
-        } else if (player2 == "2"){
-            players[0] = new NumericalPlayer(player1Name, 50);
-            players[1] = new Numerical_Random_Player(50);
-        } else{
-            players[0] = new Numerical_Random_Player(50);
-            players[1] = new Numerical_Random_Player(50);
-        }
-
-        // Create the game manager and run the game
-        GameManager<int> Numerical_game(B, players);
-        Numerical_game.run();
-
-        // Clean up
-        delete B;
-        for (int i = 0; i < 2; ++i) {
-            delete players[i];
-        }
-    }
-
-    else if (game == "6"){
-        player player1( player1Name, 'X');
-        player player2( player2Name, 'O');
-
-        MisereGameManager game(&player1, &player2);
-        game.play_game();
-    }
-
-    else if (game == "7"){
-        _4x4_TicTacToe_Board<char> *B = new _4x4_TicTacToe_Board<char>();  // Set up the board
-        Player<char> *players[2];
-
-        // Set up player 2
-        if (player2 == "1") {
-            cout << "Enter Player 2 name: ";   // Get the name of player 2
-            cin.ignore();
-            getline(cin, player2Name);
-            player2Name[0] = toupper(player2Name[0]);
-            players[0] = new _4x4_TicTacToe_Player<char>(player1Name, 'X');
-            players[1] = new _4x4_TicTacToe_Player<char>(player2Name, 'O');
-        } else if (player2 == "2") {
-            players[0] = new _4x4_TicTacToe_Player<char>(player1Name, 'X');
-            players[1] = new _4x4_TicTacToe_Random_Player<char>('O');
-        } else {
-            players[0] = new _4x4_TicTacToe_Random_Player<char>('X');
-            players[1] = new _4x4_TicTacToe_Random_Player<char>('O');
-        }
-
-        // Create the game manager and run the game
-        GameManager<char> _4x4_TicTacToe_game(B, players);
-        _4x4_TicTacToe_game.run();
-
-        // Clean up
-        delete B;
-        for (int i = 0; i < 2; ++i) {
-            delete players[i];
-        }
-    }
-
-    else if (game == "8"){
-        UltimateBoard *B = new UltimateBoard();  // Set up the board
-        Player<char> *players[2];
-
-        // Set up player 2
-        if (player2 == "1") {
-            cout << "Enter Player 2 name: ";
-            cin.ignore();
-            getline(cin, player2Name);
-            player2Name[0] = toupper(player2Name[0]);
-            players[0] = new UltimatePlayer(player1Name, 'X');
-            players[1] = new UltimatePlayer(player2Name, 'O');
-        } else if (player2 == "2"){
-            players[0] = new UltimatePlayer(player1Name, 'X');
-            players[1] = new Ultimate_Random_Player('O');
-        } else {
-            players[0] = new Ultimate_Random_Player('X');
-            players[1] = new Ultimate_Random_Player('O');
-        }
-
-        // Create the game manager and run the game
-        GameManager<char> Ultimate_game(B, players);
-        Ultimate_game.run();
-
-        // Clean up
-        delete B;
-        for (int i = 0; i < 2; ++i) {
-            delete players[i];
-        }
-    }
-    return 0;
+MisereBoard::MisereBoard() {
+    board = vector<vector<char>>(3, vector<char>(3, ' '));
+    moves = 0;
 }
 
+void MisereBoard::display_board() {
+    cout << "\n";
+    for (int i = 0; i < 3; i++) {
+        cout << " ";
+        for (int j = 0; j < 3; j++) {
+            cout << board[i][j];
+            if (j < 2) cout << " | ";
+        }
+        cout << "\n";
+        if (i < 2) cout << "---|---|---\n";
+    }
+    cout << "\n";
+}
 
+bool MisereBoard::make_move(int x, int y, char symbol) {
+    if (x >= 0 && x < 3 && y >= 0 && y < 3 && board[x][y] == ' ') {
+        board[x][y] = symbol;
+        moves++;
+        return true;
+    }
+    return false;
+}
 
+bool MisereBoard::is_losing_move(char symbol) {
+    for (int i = 0; i < 3; i++) {
+        if ((board[i][0] == symbol && board[i][1] == symbol && board[i][2] == symbol) ||  // Rows
+            (board[0][i] == symbol && board[1][i] == symbol && board[2][i] == symbol)) {  // Columns
+            return true;
+        }
+    }
+    if ((board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol) ||      // Main diagonal
+        (board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol)) {      // Anti-diagonal
+        return true;
+    }
+    return false;
+}
+
+bool MisereBoard::is_draw() {
+    return moves == 9;
+}
+
+Player::Player(string n, char s) : name(n), symbol(s) {}
+
+string Player::get_name() {
+    return name;
+}
+
+char Player::get_symbol() {
+    return symbol;
+}
+
+void Player::get_move(int& x, int& y) {
+    cout << name << " (" << symbol << "), enter your move (row and column: 0-2): ";
+    cin >> x >> y;
+}
+
+AIPlayer::AIPlayer(string n, char s) : Player(n, s) {}
+
+void AIPlayer::get_move(int& x, int& y, MisereBoard& board) {
+    srand(time(0));
+    do {
+        x = rand() % 3;
+        y = rand() % 3;
+    } while (!board.make_move(x, y, get_symbol()));
+    cout << name << " chooses: " << x << " " << y << endl;
+}
+
+MisereGameManager::MisereGameManager(Player* p1, Player* p2) {
+    players[0] = p1;
+    players[1] = p2;
+}
+
+void MisereGameManager::play_game() {
+    int x, y;
+    int turn = 0;
+    while (true) {
+        board.display_board();
+        Player* current_player = players[turn % 2];
+
+        if (AIPlayer* ai = dynamic_cast<AIPlayer*>(current_player)) {
+            ai->get_move(x, y, board);
+        } else {
+            do {
+                current_player->get_move(x, y);
+            } while (!board.make_move(x, y, current_player->get_symbol()));
+        }
+
+        if (board.is_losing_move(current_player->get_symbol())) {
+            board.display_board();
+            cout << current_player->get_name() << " loses the game!\n";
+            return;
+        }
+
+        if (board.is_draw()) {
+            board.display_board();
+            cout << "The game is a draw!\n";
+            return;
+        }
+
+        turn++;
+    }
+}
+
+int main() {
+    cout << "Welcome to Misere Tic Tac Toe!\n";
+    cout << "Avoid getting three marks in a row!\n\n";
+
+    cout << "Menu:\n";
+    cout << "1. Play against another player\n";
+    cout << "2. Play against AI\n";
+    cout << "Enter your choice: ";
+    int choice;
+    cin >> choice;
+
+    Player* player1 = new Player("Player 1", 'X');
+    Player* player2;
+
+    if (choice == 1) {
+        player2 = new Player("Player 2", 'O');
+    } else {
+        player2 = new AIPlayer("AI Player", 'O');
+    }
+
+    MisereGameManager game(player1, player2);
+    game.play_game();
+
+    delete player1;
+    delete player2;
+
+    return 0;
+}
